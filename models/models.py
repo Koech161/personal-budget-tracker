@@ -14,6 +14,11 @@ class User(Base):
     incomes = relationship('Income', back_populates='user')
     expenses = relationship('Expense', back_populates='user')
 
+    def __repr__(self):
+        return f'User(id={self.id},' + \
+            f'username={self.username},' + \
+            f'email={self.email})'
+
 class Income(Base):
     __tablename__ = 'incomes'    
     id = Column(Integer, primary_key= True)
@@ -23,6 +28,12 @@ class Income(Base):
     date = Column(Date, nullable=False)
 
     user = relationship('User', back_populates='incomes')
+
+    def __repr__(self):
+        return f'Income(id={self.id},' + \
+            f'source={self.source},' + \
+            f'amount={self.amount},' + \
+            f'date={self.date})'
 
 class Expense(Base):
     __tablename__ = 'expenses'
@@ -36,6 +47,12 @@ class Expense(Base):
     user =  relationship('User', back_populates='expenses') 
     category = relationship('Category', back_populates='expenses') 
 
+    def __repr__(self):
+        return f'Expense(id={self.id},' + \
+            f'amount={self.amount},' + \
+            f'date={self.date},' + \
+            f'description={self.description})'
+
 class Category(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
@@ -43,6 +60,10 @@ class Category(Base):
 
     expenses = relationship('Expense', back_populates='category')
     budgets = relationship('Budget', back_populates='category')
+
+    def __repr__(self):
+        return f'Category(id={self.id},' + \
+            f'name={self.name},)'
 
 class Budget(Base):
     __tablename__ = 'budgets'
@@ -53,6 +74,12 @@ class Budget(Base):
     period_end = Column(Date, nullable=False)
 
     category = relationship('Category', back_populates='budgets')
+
+    def __repr__(self):
+        return f'Budget(id={self.id},' + \
+            f'amount={self.amount},' + \
+            f'period_start={self.period_start},' + \
+            f'period_end={self.period_end})'
 
 Database_url  = 'sqlite:///budget_tracker.db'
 engine  =create_engine(Database_url)   
