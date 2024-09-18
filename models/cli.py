@@ -316,16 +316,26 @@ def main():
         elif choice == '18':
             list_budgets()
         elif choice == '19':
-            pass
+            budget_id = int(input('Enter budget ID to update: '))
+            category_id = input('Enter new category id (leave blank to keep current): ') or None
+            category_id = int(category_id) if category_id else None
+            amount = input('Enter new amount (leave blank to keep current): ') or None
+            amount = float(amount) if amount else None
+            period_start_str = input('Enter new period start date (leave blank to keep current): ') or None
+            period_start = datetime.strptime(period_start_str, '%Y-%m-%d').date() if period_start_str else None
+            period_end_str = input('Enter new period end date (leave blank to keep current): ') or None
+            period_end = datetime.strptime(period_end_str, '%Y-%m-%d').date() if period_end_str else None
+            update_budget(budget_id, category_id, amount, period_start, period_end)
         elif choice == '20':
-           pass       
+           budget_id = int(input('Enter budget ID to delete: '))   
+           delete_budget(budget_id) 
         elif choice == '21':
             check_balance()    
         elif choice == '22':
             print('Thank you for managing your budget')
             break
         else:
-            print('Invalid choice. Please enter number between 1 and 11')  
+            print('Invalid choice. Please enter number between 1 and 22')  
 
 if __name__ == '__main__':
     main()             
