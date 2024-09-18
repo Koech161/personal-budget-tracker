@@ -1,5 +1,6 @@
 from models import Base, User, Income, Expense, Category, Budget, session, Database_url
-
+from datetime import datetime
+from sqlalchemy import func
 def add_user():
     username = input('Enter username: ')
     email = input('Enter email: ')
@@ -21,7 +22,8 @@ def add_income():
     user_id = int(input('Enter user ID: '))
     source = input('Enter income source: ')
     amount = float(input('Enter income amount: '))
-    date = input('Enter income date (YYYY-MM-DD): ')
+    date_str = input('Enter income date (YYYY-MM-DD): ')
+    date = datetime.strptime(date_str,'%Y-%m-%d').date()
     new_income = Income(user_id=user_id, source=source, amount=amount, date=date)
     session.add(new_income)
     session.commit()
@@ -37,14 +39,15 @@ def list_incomes():
 
 def add_expense():
     user_id = int(input('Ebter user ID: '))
-    category_id: int(input('Enter category ID: '))
+    category_id = int(input('Enter category ID: '))
     amount = float(input('Enter expense amount: '))
-    date = input('Enter expense date (YYYY-MM-DD): ')
+    date_str = input('Enter expense date (YYYY-MM-DD): ')
+    date = datetime.strptime(date_str,'%Y-%m-%d').date()
     description = input('Enter expense description: ')
     new_expense = Expense(user_id=user_id, category_id=category_id, amount=amount, date=date, description=description)
     session.add(new_expense)
     session.commit()
-    print("Expense '{description}' added successfully.")
+    print(f"Expense {description} added successfully.")
 
 def list_expenses():
     expenses =  session.query(Expense).all()
@@ -59,7 +62,7 @@ def add_category():
     new_category = Category(name=name)
     session.add(new_category)
     session.commit()
-    print("Category '{name}' added successfully. ")  
+    print(f"Category {name} added successfully. ")  
 
 def list_categories():
     categories = session.query(Category).all()
@@ -72,12 +75,14 @@ def list_categories():
 def add_budget():
     category_id = int(input('Enter Category ID: '))
     amount = float(input('Enter budget amount: '))
-    period_start = input('Enter period start date (YYYY-MM-DD): ')
-    period_end = input('Enter period end date (YYYY-MM-DD): ')
+    period_start_str = input('Enter period start date (YYYY-MM-DD): ')
+    period_start= datetime.strptime(period_start_str,'%Y-%m-%d').date()
+    period_end_str = input('Enter period end date (YYYY-MM-DD): ')
+    period_end= datetime.strptime(period_end_str,'%Y-%m-%d').date()
     new_budget = Budget(category_id=category_id, amount=amount, period_start=period_start, period_end=period_end)
     session.add(new_budget)
     session.commit()
-    print(f"Budget for category ID '{category_id}' added successfuly.")
+    print(f"Budget for category ID {category_id} added successfuly.")
 
 def list_budgets():
     budgets = session.query(Budget).all()
@@ -85,8 +90,17 @@ def list_budgets():
         print('No budgets found.')
     else:
         for budget in budgets:
-            print(budget)       
+            print(budget)    
+def check_balance():
+    user_id = int(input('Enter user ID to check balance: ')) 
 
+    total_income = session.query(func.sum(Income.amount)).filter(Income.user_id == user_id).scalar() or 0
+    total_expenses = session.query(func.sum(Expense.amount)).filter(Expense.user_id ==user_id).scalar() or 0             
+    balance = total_income - total_expenses
+    
+    print(f"Total income: ${total_income}")
+    print(f"Total Expenses: ${total_expenses}")
+    print(f"Your Balance is :${balance}")
 
 def main():
     while True:
@@ -101,9 +115,10 @@ def main():
         print("8. List Categories")
         print("9. Add Budget")
         print("10. List Budgets")
-        print("11. Exit")
+        print("11. Check Balance")
+        print("12. Exit")
 
-        choice = input("Enter your Choice (1 - 11)")
+        choice = input("Enter your Choice (1 - 12)")
 
         if choice == '1':
             add_user()
@@ -126,6 +141,8 @@ def main():
         elif choice == '10':
             list_budgets()
         elif choice == '11':
+            check_balance()    
+        elif choice == '12':
             print('Thank you for managing your budget')
             break
         else:
