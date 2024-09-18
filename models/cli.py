@@ -209,7 +209,7 @@ def update_budget(budget_id, category_id = None, amount=None,period_start =None,
         if amount is not None:
             budget.amount = amount
         if period_start is not None:
-            budget.period.start = period_start
+            budget.period_start = period_start
         if period_end is not None:
             budget.period_end = period_end
         session.commit()
@@ -218,7 +218,7 @@ def update_budget(budget_id, category_id = None, amount=None,period_start =None,
         print(f'Budget {budget_id} not found.') 
 
 def delete_budget(budget_id):
-    budget = session.query(Budget).filter_by(id= budget_id).first
+    budget = session.query(Budget).filter_by(id= budget_id).first()
     if budget:
         session.delete(budget)
         session.commit()
@@ -260,24 +260,66 @@ def main():
         if choice == '1':
             add_user()
         elif choice == '2':
-            list_users()    
+            list_users()  
         elif choice == '3':
-            add_income()        
+            user_id = int(input('Enter user ID to update: '))
+            username = input('Enter new username (leave blank to keep current): ') or None
+            email = input('Enter new email (leave blank to keep current): ') or None
+            password_hash = input('Enter new password hash (leave blank to keep current): ') or None
+            update_user(user_id, username, email, password_hash)   
         elif choice == '4':
-            list_incomes()   
+            user_id = int(input('Enter user ID to delete: '))   
+            delete_user(user_id)  
         elif choice == '5':
-            add_expense()
+            add_income()        
         elif choice == '6':
-            list_expenses()
+            list_incomes() 
         elif choice == '7':
-            add_category()
+            income_id = int(input('Enter income ID to update: '))
+            source = input('Enter new source (leave blank to keep current): ') or None
+            amount = float(input('Enter new amount (leave balnk to keep current): ')) or None
+            date_str = input('Enter new  date (leave blank to keep current):') or None
+            date = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
+            update_income(income_id, source, amount,  date)
+
         elif choice == '8':
-            list_categories()    
+            income_id = int(input('Enter income ID to delete: ')) 
+            delete_income(income_id)        
         elif choice == '9':
-            add_budget()
+            add_expense()
         elif choice == '10':
-            list_budgets()
+            list_expenses()
         elif choice == '11':
+            expense_id = int(input('Enter expense ID to update: '))
+            category_id = int(input('Enter new cageroy ID (leave blank to keeep current): ')) or None
+            amount = float(input('Enter new amount (leave nlank to keep current): '))  or None
+            date_str = input('Enter new date (leave blank to keep current) ') or None
+            date  = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
+            description = input('Enter new description (leave blank to keep current): ') or None
+            update_expense(expense_id, category_id, amount, date, description)
+        elif choice == '12':
+            expense_id = int(input('Enter expense ID to delete: '))
+            delete_expense(expense_id)
+        elif choice == '13':
+            add_category()
+        elif choice == '14':
+            list_categories()    
+        elif choice  == '15':
+            category_id = int(input('Enter cagerory ID to update: '))
+            name = input('Enter new name (leave blank to keep current): ') or None
+            update_category(category_id, name)
+        elif choice == '16':
+            category_id = int(input('Enter category ID to delete: '))
+            delete_category(category_id)        
+        elif choice == '17':
+            add_budget()
+        elif choice == '18':
+            list_budgets()
+        elif choice == '19':
+            pass
+        elif choice == '20':
+           pass       
+        elif choice == '21':
             check_balance()    
         elif choice == '22':
             print('Thank you for managing your budget')
