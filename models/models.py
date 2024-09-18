@@ -13,6 +13,7 @@ class User(Base):
     
     incomes = relationship('Income', back_populates='user')
     expenses = relationship('Expense', back_populates='user')
+    categories = relationship('Category', back_populates= 'user')
 
     def __repr__(self):
         return f'User(id={self.id},' + \
@@ -57,9 +58,11 @@ class Category(Base):
     __tablename__ = 'categories'
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
 
     expenses = relationship('Expense', back_populates='category')
     budgets = relationship('Budget', back_populates='category')
+    user = relationship('User', back_populates='categories')
 
     def __repr__(self):
         return f'Category(id={self.id},' + \

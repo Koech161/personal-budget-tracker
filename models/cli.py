@@ -8,7 +8,7 @@ def add_user():
     new_user = User(username=username, email=email, password_hash=password_hash)
     session.add(new_user)
     session.commit()
-    print(f"User '{username}' added successfully.")
+    print(f"User {username} added successfully.")
 
 def list_users():
     users = session.query(User).all()
@@ -17,6 +17,29 @@ def list_users():
     else:
         for user in users:
             print(user)    
+
+def update_user(user_id, username=None, email=None, password_hash=None):
+    user = session.query(User).filter_by(id=user_id).first()
+    if user:
+        if username is not None:
+            user.username = username
+        if email is not None:
+            user.email = email
+        if password_hash is not None:
+            user.password_hash = password_hash
+        session.commit()
+        print(f'User {user_id} updated successfully.')  
+    else:
+        print(f'user {user_id} not found.')    
+
+def delete_user(user_id):
+    user = session.query(User).filter_by(id=user_id).first()
+    if user:
+        session.delete(user)
+        session.commit()
+        print(f'User {user_id} deleted successfully.')
+    else: 
+        print(f'User {user_id} not found.')    
 
 def add_income():
     user_id = int(input('Enter user ID: '))
@@ -27,7 +50,7 @@ def add_income():
     new_income = Income(user_id=user_id, source=source, amount=amount, date=date)
     session.add(new_income)
     session.commit()
-    print(f"Income from '{source}' added successfully.")
+    print(f"Income from {source} added successfully.")
 
 def list_incomes():
     incomes = session.query(Income).all()
@@ -36,7 +59,28 @@ def list_incomes():
     else: 
         for income in  incomes:
             print(income)
+def update_income(income_id, source=None, amount=None, date=None):
+    income = session.query(Income).filter_by(id=income_id).first()
+    if income:
+        if source is not None:
+            income.source = source
+        if amount is not None:
+            income.amount = amount
+        if date is not None:
+            income.date = date
+        session.commit()
+        print(f'Income {income_id} is updated successfuly.')
+    else:
+        print(f'Income {income_id} not found.')                        
 
+def delete_income(income_id):
+    income = session.query(Income).filter_by(id=income_id).first()
+    if income:
+        session.delete(income)
+        session.commit()
+        print(f'Income {income_id} deleted successfully.')
+    else:
+        print(f'Income {income_id} not found.')        
 def add_expense():
     user_id = int(input('Ebter user ID: '))
     category_id = int(input('Enter category ID: '))
@@ -55,7 +99,32 @@ def list_expenses():
         print('No expenses found.')
     else:
         for expense in expenses:
-            print(expense)     
+            print(expense)   
+
+def update_expense(expense_id, category_id=None, amount= None, date=None, description = None):
+    expense = session.query(Expense).filter_by(id=expense_id).first()
+    if expense:
+        if category_id is not None:
+            expense.category_id = category_id
+        if amount is not None:
+            expense.amount = amount
+        if date is not None:
+            expense.date  = date
+        if description is not None:
+            expense.description = description
+        session.commit()
+        print(f'Expense {expense_id} is updated successfully.')
+    else:
+        print(f'Expense {expense_id} not found.') 
+
+def delete_expense(expense_id):
+    expense = session.query(Expense).filter_by(id=expense_id).first()
+    if expense:
+        session.delete(expense)
+        session.commit()
+        print(f'Expense {expense_id} deleted succesfully.')
+    else:
+        print(f'Expense {expense_id} not found.')    
 
 def add_category():
     name= input('Enter category name: ')
@@ -70,7 +139,27 @@ def list_categories():
         print('No categories found.')
     else:
         for category in categories:
-            print(category)        
+            print(category)    
+
+def update_category(category_id, name=None):
+    category = session.query(Category).filter_by(id=category_id).first()
+    if category:
+        if name is not None:
+            category.name = name
+        session.commit()
+        print(f'Category {category_id} is updated succesfully.')
+    else:
+        print(f'Category {category_id} not found.')    
+
+def delete_category(category_id):
+    category = session.query(Category).filter_by(id= category_id).first()
+    if category:
+        session.delete(category)
+        session.commit()
+        print(f'Category {category_id} deleted succesfully.') 
+    else:
+        print(f'Category {category_id} not found.')       
+
 
 def add_budget():
     category_id = int(input('Enter Category ID: '))
@@ -95,35 +184,83 @@ def check_balance():
     user_id = int(input('Enter user ID to check balance: ')) 
 
     total_income = session.query(func.sum(Income.amount)).filter(Income.user_id == user_id).scalar() or 0
-    total_expenses = session.query(func.sum(Expense.amount)).filter(Expense.user_id ==user_id).scalar() or 0             
+    total_expenses = session.query(func.sum(Expense.amount)).filter(Expense.user_id ==user_id).scalar() or 0  
+
+    budgeted_amount = session.query(func.sum(Budget.amount)).filter(Budget.category_id.in_(
+        session.query(Category.id).filter(Category.user_id == user_id)
+    )).scalar() or 0           
     balance = total_income - total_expenses
     
     print(f"Total income: ${total_income}")
     print(f"Total Expenses: ${total_expenses}")
     print(f"Your Balance is :${balance}")
+    print(f"TotalBudgeted Amount: {budgeted_amount}")
+
+    if budgeted_amount > balance:
+        print('Warning: Your expense exceed your budget!!')
+    else:
+        print('Your expense is within your budget.')     
+
+def update_budget(budget_id, category_id = None, amount=None,period_start =None, period_end = None):
+    budget = session.query(Budget).filter_by(id=budget_id).first()
+    if budget:
+        if category_id is not None:
+            budget.category_id = category_id
+        if amount is not None:
+            budget.amount = amount
+        if period_start is not None:
+            budget.period.start = period_start
+        if period_end is not None:
+            budget.period_end = period_end
+        session.commit()
+        print(f'Budget {budget_id} updated successfully.')
+    else:
+        print(f'Budget {budget_id} not found.') 
+
+def delete_budget(budget_id):
+    budget = session.query(Budget).filter_by(id= budget_id).first
+    if budget:
+        session.delete(budget)
+        session.commit()
+        print(f'Budget {budget_id} deleted successfully.')
+    else:
+        print(f'Budget {budget_id} not found.')    
+
+
+
 
 def main():
     while True:
-        print("\n====Personal_Budget_Tracker")
+        print("\n====Personal_Budget_Tracker====")
         print("1. Add User")
         print("2. List Users")
-        print("3. Add Income")
-        print("4. List incomes")
-        print("5. Add Expense")
-        print("6. List Expenses")
-        print("7. Add Category")
-        print("8. List Categories")
-        print("9. Add Budget")
-        print("10. List Budgets")
-        print("11. Check Balance")
-        print("12. Exit")
+        print("3. Update User")
+        print("4. Delete User")
+        print("5. Add Income")
+        print("6. List incomes")
+        print("7. Update Income")
+        print("8. Delete Income")
+        print("9. Add Expense")
+        print("10. List Expenses")
+        print("11. Update Expense")
+        print("12. Delete Expense")
+        print("13. Add Category")
+        print("14. List Categories")
+        print("15. Update Category")
+        print("16. Delete Category")
+        print("17. Add Budget")
+        print("18. List Budgets")
+        print("19. Update Budget")
+        print("20. Delete Budget")
+        print("21. Check Balance")
+        print("22. Exit")
 
-        choice = input("Enter your Choice (1 - 12)")
+        choice = input("Select your Choice (1 - 22)")
 
         if choice == '1':
             add_user()
         elif choice == '2':
-            list_users()
+            list_users()    
         elif choice == '3':
             add_income()        
         elif choice == '4':
@@ -142,7 +279,7 @@ def main():
             list_budgets()
         elif choice == '11':
             check_balance()    
-        elif choice == '12':
+        elif choice == '22':
             print('Thank you for managing your budget')
             break
         else:
