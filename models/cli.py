@@ -6,9 +6,16 @@ def add_user():
     email = input('Enter email: ')
     password_hash = input('Enter password: ')
     new_user = User(username=username, email=email, password_hash=password_hash)
-    session.add(new_user)
-    session.commit()
-    print(f"User {username} added successfully.")
+    try:
+        session.add(new_user)
+        session.commit()
+        print(f"User {username} added successfully.")
+    except Exception as e:
+        session.rollback()
+        if 'unique constraint' in str(e).lower():
+            print('Error: This username or email already exist.')
+        else:
+            print('An expected error occoured:', e)    
 
 def list_users():
     users = session.query(User).all()
@@ -127,8 +134,9 @@ def delete_expense(expense_id):
         print(f'Expense {expense_id} not found.')    
 
 def add_category():
+    user_id = int(input('Enter user ID: '))
     name= input('Enter category name: ')
-    new_category = Category(name=name)
+    new_category = Category(user_id=user_id,name=name)
     session.add(new_category)
     session.commit()
     print(f"Category {name} added successfully. ")  
@@ -141,9 +149,11 @@ def list_categories():
         for category in categories:
             print(category)    
 
-def update_category(category_id, name=None):
+def update_category(category_id, name=None, user_id=None):
     category = session.query(Category).filter_by(id=category_id).first()
     if category:
+        if user_id is not None:
+            category.user_id = user_id
         if name is not None:
             category.name = name
         session.commit()
@@ -277,7 +287,8 @@ def main():
         elif choice == '7':
             income_id = int(input('Enter income ID to update: '))
             source = input('Enter new source (leave blank to keep current): ') or None
-            amount = float(input('Enter new amount (leave balnk to keep current): ')) or None
+            amount = input('Enter new amount (leave balnk to keep current): ') or None
+            amount = float(amount) if amount else None
             date_str = input('Enter new  date (leave blank to keep current):') or None
             date = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
             update_income(income_id, source, amount,  date)
@@ -292,7 +303,8 @@ def main():
         elif choice == '11':
             expense_id = int(input('Enter expense ID to update: '))
             category_id = int(input('Enter new cageroy ID (leave blank to keeep current): ')) or None
-            amount = float(input('Enter new amount (leave nlank to keep current): '))  or None
+            amount = input('Enter new amount (leave nlank to keep current): ')  or None
+            amount = float(amount) if amount else None
             date_str = input('Enter new date (leave blank to keep current) ') or None
             date  = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
             description = input('Enter new description (leave blank to keep current): ') or None
