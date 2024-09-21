@@ -1,4 +1,4 @@
-from models import Base, User, Income, Expense, Category, Budget, session, Database_url
+from models.models import Base, User, Income, Expense, Category, Budget, session, Database_url
 from datetime import datetime
 from sqlalchemy import func
 def add_user():
@@ -349,6 +349,4 @@ def main():
         else:
             print('Invalid choice. Please enter number between 1 and 22')  
 
-if __name__ == '__main__':
-    main()             
 
