@@ -27,5 +27,6 @@
                      - budgets     
                      - categories
                      - expenses
-4. User can delete  user, income, budgets, categories and expenses by ID
-5. A CLI is availablefor execcuting commands for adding, listing, deleting and updating.                                                             
+4. User can delete  user, income, budgets, categories and expenses by ID.
+5. A CLI is availablefor execcuting commands for adding, listing, deleting and updating.                   
+6. It has a database populated by the CLI.                                          
