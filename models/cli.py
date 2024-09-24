@@ -241,112 +241,177 @@ def delete_budget(budget_id):
 
 def main():
     while True:
-        print("\n====Personal_Budget_Tracker====")
-        print("1. Add User")
-        print("2. List Users")
-        print("3. Update User")
-        print("4. Delete User")
-        print("5. Add Income")
-        print("6. List incomes")
-        print("7. Update Income")
-        print("8. Delete Income")
-        print("9. Add Expense")
-        print("10. List Expenses")
-        print("11. Update Expense")
-        print("12. Delete Expense")
-        print("13. Add Category")
-        print("14. List Categories")
-        print("15. Update Category")
-        print("16. Delete Category")
-        print("17. Add Budget")
-        print("18. List Budgets")
-        print("19. Update Budget")
-        print("20. Delete Budget")
-        print("21. Check Balance")
-        print("22. Exit")
+        print("\n==== Personal Budget Tracker ====")
+        print("1. Users")
+        print("2. Incomes")
+        print("3. Expenses")
+        print("4. Categories")
+        print("5. Budgets")
+        print("6. Check Balance")
+        print("7. Exit")
 
-        choice = input("Select your Choice (1 - 22)")
+        choice = input("Select your choice (1-7): ")
 
         if choice == '1':
-            add_user()
-        elif choice == '2':
-            list_users()  
-        elif choice == '3':
-            user_id = int(input('Enter user ID to update: '))
-            username = input('Enter new username (leave blank to keep current): ') or None
-            email = input('Enter new email (leave blank to keep current): ') or None
-            password_hash = input('Enter new password hash (leave blank to keep current): ') or None
-            update_user(user_id, username, email, password_hash)   
-        elif choice == '4':
-            user_id = int(input('Enter user ID to delete: '))   
-            delete_user(user_id)  
-        elif choice == '5':
-            add_income()        
-        elif choice == '6':
-            list_incomes() 
-        elif choice == '7':
-            income_id = int(input('Enter income ID to update: '))
-            source = input('Enter new source (leave blank to keep current): ') or None
-            amount = input('Enter new amount (leave balnk to keep current): ') or None
-            amount = float(amount) if amount else None
-            date_str = input('Enter new  date (leave blank to keep current):') or None
-            date = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
-            update_income(income_id, source, amount,  date)
+            while True:
+                print("\n--- User Management ---")
+                print("1. Add User")
+                print("2. List Users")
+                print("3. Update User")
+                print("4. Delete User")
+                print("5. Back to Main Menu")
 
-        elif choice == '8':
-            income_id = int(input('Enter income ID to delete: ')) 
-            delete_income(income_id)        
-        elif choice == '9':
-            add_expense()
-        elif choice == '10':
-            list_expenses()
-        elif choice == '11':
-            expense_id = int(input('Enter expense ID to update: '))
-            category_id = int(input('Enter new cageroy ID (leave blank to keeep current): ')) or None
-            amount = input('Enter new amount (leave nlank to keep current): ')  or None
-            amount = float(amount) if amount else None
-            date_str = input('Enter new date (leave blank to keep current) ') or None
-            date  = datetime.strptime(date_str, '%Y, %m, %d').date() if date_str else None
-            description = input('Enter new description (leave blank to keep current): ') or None
-            update_expense(expense_id, category_id, amount, date, description)
-        elif choice == '12':
-            expense_id = int(input('Enter expense ID to delete: '))
-            delete_expense(expense_id)
-        elif choice == '13':
-            add_category()
-        elif choice == '14':
-            list_categories()    
-        elif choice  == '15':
-            category_id = int(input('Enter cagerory ID to update: '))
-            name = input('Enter new name (leave blank to keep current): ') or None
-            update_category(category_id, name)
-        elif choice == '16':
-            category_id = int(input('Enter category ID to delete: '))
-            delete_category(category_id)        
-        elif choice == '17':
-            add_budget()
-        elif choice == '18':
-            list_budgets()
-        elif choice == '19':
-            budget_id = int(input('Enter budget ID to update: '))
-            category_id = input('Enter new category id (leave blank to keep current): ') or None
-            category_id = int(category_id) if category_id else None
-            amount = input('Enter new amount (leave blank to keep current): ') or None
-            amount = float(amount) if amount else None
-            period_start_str = input('Enter new period start date (leave blank to keep current): ') or None
-            period_start = datetime.strptime(period_start_str, '%Y-%m-%d').date() if period_start_str else None
-            period_end_str = input('Enter new period end date (leave blank to keep current): ') or None
-            period_end = datetime.strptime(period_end_str, '%Y-%m-%d').date() if period_end_str else None
-            update_budget(budget_id, category_id, amount, period_start, period_end)
-        elif choice == '20':
-           budget_id = int(input('Enter budget ID to delete: '))   
-           delete_budget(budget_id) 
-        elif choice == '21':
-            check_balance()    
-        elif choice == '22':
-            print('Thank you for managing your budget')
+                user_choice = input("Select your choice (1-5): ")
+                
+                if user_choice == '1':
+                    add_user()
+                elif user_choice == '2':
+                    list_users()
+                elif user_choice == '3':
+                    user_id = int(input('Enter user ID to update: '))
+                    username = input('Enter new username (leave blank to keep current): ') or None
+                    email = input('Enter new email (leave blank to keep current): ') or None
+                    password_hash = input('Enter new password hash (leave blank to keep current): ') or None
+                    update_user(user_id, username, email, password_hash)
+                elif user_choice == '4':
+                    user_id = int(input('Enter user ID to delete: '))
+                    delete_user(user_id)
+                elif user_choice == '5':
+                    break
+                else:
+                    print('Invalid choice. Please enter number between 1 and 5')
+
+        elif choice == '2':
+            while True:
+                print("\n--- Income Management ---")
+                print("1. Add Income")
+                print("2. List Incomes")
+                print("3. Update Income")
+                print("4. Delete Income")
+                print("5. Back to Main Menu")
+
+                income_choice = input("Select your choice (1-5): ")
+
+                if income_choice == '1':
+                    add_income()
+                elif income_choice == '2':
+                    list_incomes()
+                elif income_choice == '3':
+                    income_id = int(input('Enter income ID to update: '))
+                    source = input('Enter new source (leave blank to keep current): ') or None
+                    amount = input('Enter new amount (leave blank to keep current): ') or None
+                    amount = float(amount) if amount else None
+                    date_str = input('Enter new date (leave blank to keep current): ') or None
+                    date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else None
+                    update_income(income_id, source, amount, date)
+                elif income_choice == '4':
+                    income_id = int(input('Enter income ID to delete: '))
+                    delete_income(income_id)
+                elif income_choice == '5':
+                    break
+                else:
+                    print('Invalid choice. Please enter number between 1 and 5')
+
+        elif choice == '3':
+            while True:
+                print("\n--- Expense Management ---")
+                print("1. Add Expense")
+                print("2. List Expenses")
+                print("3. Update Expense")
+                print("4. Delete Expense")
+                print("5. Back to Main Menu")
+
+                expense_choice = input("Select your choice (1-5): ")
+
+                if expense_choice == '1':
+                    add_expense()
+                elif expense_choice == '2':
+                    list_expenses()
+                elif expense_choice == '3':
+                    expense_id = int(input('Enter expense ID to update: '))
+                    category_id = int(input('Enter new category ID (leave blank to keep current): ') or None)
+                    amount = input('Enter new amount (leave blank to keep current): ') or None
+                    amount = float(amount) if amount else None
+                    date_str = input('Enter new date (leave blank to keep current): ') or None
+                    date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else None
+                    description = input('Enter new description (leave blank to keep current): ') or None
+                    update_expense(expense_id, category_id, amount, date, description)
+                elif expense_choice == '4':
+                    expense_id = int(input('Enter expense ID to delete: '))
+                    delete_expense(expense_id)
+                elif expense_choice == '5':
+                    break
+                else:
+                    print('Invalid choice. Please enter number between 1 and 5')
+
+        elif choice == '4':
+            while True:
+                print("\n--- Category Management ---")
+                print("1. Add Category")
+                print("2. List Categories")
+                print("3. Update Category")
+                print("4. Delete Category")
+                print("5. Back to Main Menu")
+
+                category_choice = input("Select your choice (1-5): ")
+
+                if category_choice == '1':
+                    add_category()
+                elif category_choice == '2':
+                    list_categories()
+                elif category_choice == '3':
+                    category_id = int(input('Enter category ID to update: '))
+                    name = input('Enter new name (leave blank to keep current): ') or None
+                    update_category(category_id, name)
+                elif category_choice == '4':
+                    category_id = int(input('Enter category ID to delete: '))
+                    delete_category(category_id)
+                elif category_choice == '5':
+                    break
+                else:
+                    print('Invalid choice. Please enter number between 1 and 5')
+
+        elif choice == '5':
+            while True:
+                print("\n--- Budget Management ---")
+                print("1. Add Budget")
+                print("2. List Budgets")
+                print("3. Update Budget")
+                print("4. Delete Budget")
+                print("5. Back to Main Menu")
+
+                budget_choice = input("Select your choice (1-5): ")
+
+                if budget_choice == '1':
+                    add_budget()
+                elif budget_choice == '2':
+                    list_budgets()
+                elif budget_choice == '3':
+                    budget_id = int(input('Enter budget ID to update: '))
+                    category_id = input('Enter new category ID (leave blank to keep current): ') or None
+                    category_id = int(category_id) if category_id else None
+                    amount = input('Enter new amount (leave blank to keep current): ') or None
+                    amount = float(amount) if amount else None
+                    period_start_str = input('Enter new period start date (leave blank to keep current): ') or None
+                    period_start = datetime.strptime(period_start_str, '%Y-%m-%d').date() if period_start_str else None
+                    period_end_str = input('Enter new period end date (leave blank to keep current): ') or None
+                    period_end = datetime.strptime(period_end_str, '%Y-%m-%d').date() if period_end_str else None
+                    update_budget(budget_id, category_id, amount, period_start, period_end)
+                elif budget_choice == '4':
+                    budget_id = int(input('Enter budget ID to delete: '))
+                    delete_budget(budget_id)
+                elif budget_choice == '5':
+                    break
+                else:
+                    print('Invalid choice. Please enter number between 1 and 5')
+
+        elif choice == '6':
+            check_balance()
+        elif choice == '7':
+            print('Thank you for managing your budget!')
             break
         else:
-            print('Invalid choice. Please enter number between 1 and 22')  
+            print('Invalid choice. Please enter number between 1 and 7')
+ 
 
 
