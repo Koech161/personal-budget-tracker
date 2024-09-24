@@ -1,4 +1,5 @@
-from models.models import Base, User, Income, Expense, Category, Budget, session, Database_url
+from models import  User, Income, Expense, Category, Budget, session,database
+from models.database import Base
 from datetime import datetime
 from sqlalchemy import func
 def add_user():
@@ -194,22 +195,29 @@ def check_balance():
     user_id = int(input('Enter user ID to check balance: ')) 
 
     total_income = session.query(func.sum(Income.amount)).filter(Income.user_id == user_id).scalar() or 0
-    total_expenses = session.query(func.sum(Expense.amount)).filter(Expense.user_id ==user_id).scalar() or 0  
+    total_expenses = session.query(func.sum(Expense.amount)).filter(Expense.user_id == user_id).scalar() or 0  
 
     budgeted_amount = session.query(func.sum(Budget.amount)).filter(Budget.category_id.in_(
         session.query(Category.id).filter(Category.user_id == user_id)
     )).scalar() or 0           
+    
     balance = total_income - total_expenses
+
+    return total_income, total_expenses, balance, budgeted_amount
+
+def display_balance():
+    total_income, total_expenses, balance, budgeted_amount = check_balance()
     
     print(f"Total income: ${total_income}")
     print(f"Total Expenses: ${total_expenses}")
-    print(f"Your Balance is :${balance}")
-    print(f"TotalBudgeted Amount: {budgeted_amount}")
+    print(f"Your Balance is: ${balance}")
+    print(f"Total Budgeted Amount: {budgeted_amount}")
 
     if budgeted_amount > balance:
-        print('Warning: Your expense exceed your budget!!')
+        print('Warning: Your expenses exceed your budget!')
     else:
-        print('Your expense is within your budget.')     
+        print('Your expenses are within your budget.')
+   
 
 def update_budget(budget_id, category_id = None, amount=None,period_start =None, period_end = None):
     budget = session.query(Budget).filter_by(id=budget_id).first()
@@ -406,7 +414,7 @@ def main():
                     print('Invalid choice. Please enter number between 1 and 5')
 
         elif choice == '6':
-            check_balance()
+            display_balance()
         elif choice == '7':
             print('Thank you for managing your budget!')
             break
